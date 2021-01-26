@@ -1,0 +1,30 @@
+---
+- name: Update DNS Dynamically
+  hosts: DNS
+  connection: local
+  gather_facts: False
+
+  tasks:
+
+    - name: Include Default Variables
+      include_vars: "dnsvars.yml"
+
+    - name: Run NSUPDATE
+      nsupdate:
+        key_name: "{{keyname}}"
+        key_secret: "{{secret}}"
+        server: "{{ddns_server}}"
+        zone: "sectv.com"
+        record: "{{inventory_hostname}}"
+        value: "{{ipaddress}}"
+      when: (ipaddress is defined) or (ipaddress|length > 0)
+
+    - name: reverse update
+      nsupdate:
+        key_name: "{{keyname}}"
+        key_secret: "{{secret}}"
+        server: "{{ddns_server}}"
+        record: "{{reverse}}.in-addr.arpa."
+        type: "PTR"
+        value: "{{inventory_hostname}}.sectv.com."
+      when: (reverse is defined) or (reverse|length > 0)
