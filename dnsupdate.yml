@@ -6,9 +6,6 @@
 
   tasks:
 
-    - name: Include Default Variables
-      include_vars: "dnsvars.yml"
-
     - name: Run NSUPDATE
       nsupdate:
         key_name: "{{keyname}}"
